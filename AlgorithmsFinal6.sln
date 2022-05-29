@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A_ExpensiveNetwork", "A_ExpensiveNetwork\A_ExpensiveNetwork.csproj", "{5468038E-4393-4208-A25E-ADF769DE060E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A_ExpensiveNetwork", "A_ExpensiveNetwork\A_ExpensiveNetwork.csproj", "{5468038E-4393-4208-A25E-ADF769DE060E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B_Railways", "B_Railways\B_Railways.csproj", "{7E127E8B-C802-4B85-B7F1-D4F5BEC5B791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5468038E-4393-4208-A25E-ADF769DE060E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5468038E-4393-4208-A25E-ADF769DE060E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5468038E-4393-4208-A25E-ADF769DE060E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E127E8B-C802-4B85-B7F1-D4F5BEC5B791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E127E8B-C802-4B85-B7F1-D4F5BEC5B791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E127E8B-C802-4B85-B7F1-D4F5BEC5B791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E127E8B-C802-4B85-B7F1-D4F5BEC5B791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
