@@ -1,0 +1,227 @@
+﻿// https://contest.yandex.ru/contest/25070/run-report/68683369/
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace A_ExpensiveNetwork
+{
+    public class Solution
+    {
+        private static TextReader _reader;
+        private static TextWriter _writer;
+
+        public static TextWriter Writer { get => _writer; set => _writer = value; }
+
+        public static void Main(string[] args)
+        {
+            InitialiseStreams();
+
+            var numbers = ReadList();
+            var n = numbers[0];
+            var m = numbers[1];
+
+            List<Ray>[] graph = ReadGraphToAdjacencyList(n, m);
+            int result = FindMaxWeightOfST(graph, n, m);
+
+            // print result
+            if (result != -1)
+            {
+                _writer.WriteLine(result);
+            }
+            else
+            {
+                _writer.WriteLine("Oops! I did it again");
+            }
+
+
+            CloseStreams();
+        }
+
+
+        private static int FindMaxWeightOfST(List<Ray>[] graph, int n, int m)
+        {
+            var notAdded = new HashSet<int>(Enumerable.Range(1, n));
+            var rays = new MyHeapOfRays(m);
+            int sum = 0;
+            var v = 1;
+
+            AddVertex(v, notAdded, rays, graph);
+            while (notAdded.Count > 0)
+            {
+                Ray e = rays.GetMaxPriority();
+                if (e == null)
+                {
+                    return -1;
+                }
+                if (notAdded.Contains(e.To))
+                {
+                    sum += e.Weight;
+                    AddVertex(e.To, notAdded, rays, graph);
+                }
+            }
+
+            return sum;
+        }
+
+        private static void AddVertex(int v, HashSet<int> notAdded, MyHeapOfRays rays, List<Ray>[] graph)
+        {
+            notAdded.Remove(v);
+            foreach (var ray in graph[v])
+            {
+                if (notAdded.Contains(ray.To))
+                    rays.Add(ray);
+            }
+        }
+
+        private static void CloseStreams()
+        {
+            _reader.Close();
+            Writer.Close();
+        }
+
+        private static void InitialiseStreams()
+        {
+            _reader = new StreamReader(Console.OpenStandardInput());
+            Writer = new StreamWriter(Console.OpenStandardOutput());
+        }
+
+        private static List<int> ReadList()
+        {
+            return _reader.ReadLine()
+                .Split(new[] { ' ', '\t', }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+        }
+
+        private static List<Ray>[] ReadGraphToAdjacencyList(int n, int m)
+        {
+            List<Ray>[] vertex = new List<Ray>[n + 1];
+            for (int i = 1; i <= n; i++)
+                vertex[i] = new List<Ray>();
+
+            for (var i = 0; i < m; i++)
+            {
+                var items = ReadList();
+                vertex[items[0]].Add(new Ray { To = items[1], Weight = items[2] });
+                vertex[items[1]].Add(new Ray { To = items[0], Weight = items[2] });
+            }
+
+            return vertex;
+        }
+
+        class Ray : IComparable<Ray>
+        {
+            public int Weight;
+            public int To;
+
+            public int CompareTo(Ray other)
+            {
+                return (other.Weight, other.To).CompareTo((Weight, To));
+            }
+
+            public static bool operator <(Ray op1, Ray op2)
+            {
+                return op1.CompareTo(op2) < 0;
+            }
+
+            public static bool operator >(Ray op1, Ray op2)
+            {
+                return op1.CompareTo(op2) > 0;
+
+
+            }
+        }
+
+        class MyHeapOfRays
+        {
+            private Ray[] _items;
+            private int _maxSize;
+            private int _lastIndex;
+
+
+            public MyHeapOfRays(int n)
+            {
+                _items = new Ray[n + 1];
+                _lastIndex = 0;
+                _maxSize = n;
+            }
+
+            public void Add(Ray r)
+            {
+                if (_lastIndex > _maxSize)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+                _items[++_lastIndex] = r;
+                SiftUp(_lastIndex);
+            }
+
+            private void SiftUp(int index)
+            {
+                if (index <= 1)
+                {
+                    return;
+                }
+
+                int parentIndex = index / 2;
+                if (_items[parentIndex] > _items[index])
+                {
+                    var temp = _items[parentIndex];
+                    _items[parentIndex] = _items[index];
+                    _items[index] = temp;
+                    SiftUp(parentIndex);
+                }
+
+            }
+
+            private void SiftDown(int index)
+            {
+                int left = 2 * index;
+                int right = 2 * index + 1;
+
+                if (_lastIndex < left)
+                {
+                    return;
+                }
+                int indexLargest;
+                if (right <= _lastIndex)
+                {
+                    if (_items[left] < _items[right])
+                    {
+                        indexLargest = left;
+                    }
+                    else
+                    {
+                        indexLargest = right;
+                    }
+                }
+                else
+                {
+                    indexLargest = left;
+                }
+
+                if (_items[index] > _items[indexLargest])
+                {
+                    var temp = _items[indexLargest];
+                    _items[indexLargest] = _items[index];
+                    _items[index] = temp;
+                    SiftDown(indexLargest);
+                }
+            }
+
+            public Ray GetMaxPriority()
+            {
+                if (_lastIndex == 0)
+                {
+                    return null;
+                }
+                var result = _items[1];
+                _items[1] = _items[_lastIndex--];
+                SiftDown(1);
+                return result;
+            }
+        }
+
+    }
+}
